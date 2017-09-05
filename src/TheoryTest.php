@@ -143,10 +143,10 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      * Returns the HTML5 audio HTML information as a string
      * @param int $prim This should be the question prim number
      * @param string $letter This should be the letter of the question or answer
-     * @return boolean Returns false as no audio exists for fleet
+     * @return string Returns nothing as no audio exists for fleet
      */
     protected function addAudio($prim, $letter){
-        return false;
+        return '';
     }
    
     /**
