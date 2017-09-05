@@ -2,6 +2,10 @@
 
 namespace TheoryTest\Fleet;
 
+use DBAL\Database;
+use Smarty;
+use UserAuth\User;
+
 class TheoryTest extends \TheoryTest\Car\TheoryTest{
     protected $testNo;
     protected $seconds = 5400;
