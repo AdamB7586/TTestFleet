@@ -4,7 +4,6 @@ namespace TheoryTest\Fleet;
 
 use DBAL\Database;
 use Smarty;
-use UserAuth\User;
 
 class LearnTest extends \TheoryTest\Car\LearnTest{
     public $questionsTable = 'fleet_questions';
@@ -15,10 +14,10 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Set up all of the components needed to create a Theory Test
      * @param Database $db This should be an instance of Database
      * @param Smarty $layout This needs to be an instance of Smarty Templating
-     * @param User $user This should be and instance if the User Class
+     * @param object $user This should be and instance if the User Class
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
      */
-    public function __construct(Database $db, Smarty $layout, User $user, $userID = false) {
+    public function __construct(Database $db, Smarty $layout, $user, $userID = false) {
         parent::__construct($db, $layout, $user, $userID);
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
     }
