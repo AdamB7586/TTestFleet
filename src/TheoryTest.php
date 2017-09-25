@@ -35,9 +35,9 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
 
     /**
      * Create a new Random Fleet Theory Test for the test number given
-     * @param int $theorytest Should be the test number
+     * @param int $test Should be the test number
      */
-    public function createNewTest(){
+    public function createNewTest($test = 1){
         $this->clearSettings();
         self::$user->checkUserAccess(100, 'fleet');
         if($this->anyExisting() === false){
