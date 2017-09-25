@@ -39,8 +39,9 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Gets the questions for the current section test
      * @param int $sectionNo This should be the section number for the test
+     * @param boolean $type This is set for compatibility with parent class
      */
-    protected function chooseQuestions($sectionNo) {
+    protected function chooseQuestions($sectionNo, $type = false) {
         $this->testInfo['section'] = $sectionNo;
         setcookie('testinfo', serialize($this->testInfo), time() + 31536000, '/');
     }
