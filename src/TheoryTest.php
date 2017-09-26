@@ -19,7 +19,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
     public $progressTable = 'fleet_test_progress';
     public $dsaCategoriesTable = 'fleet_sections';
     
-    protected static $testType = 'fleet';
+    protected $testType = 'fleet';
     
     /**
      * Set up all of the components needed to create a Theory Test
