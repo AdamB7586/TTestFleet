@@ -51,6 +51,14 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
     }
     
     /**
+     * Deletes the existing test for the current user if they wish to start again
+     * @return boolean If existing tests are deleted will return true else will return false
+     */
+    public function startNewTest() {
+        return self::$db->delete($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => 0));
+    }
+    
+    /**
      * Choose some random questions from each of the categories and insert them into the progress database
      * @param int $testNo This should be the test number you which to get the questions for
      * @param boolean $type Added for compatibility
