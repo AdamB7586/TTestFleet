@@ -6,7 +6,7 @@ use DBAL\Database;
 use Smarty;
 
 class TheoryTest extends \TheoryTest\Car\TheoryTest{
-    protected $testNo;
+    protected $testNo = 1;
     protected $seconds = 5400;
     protected $section = 'aditheory';
     
