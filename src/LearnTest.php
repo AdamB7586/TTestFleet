@@ -158,7 +158,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return int Returns the prim number for the last question
      */
     protected function getLastQuestion(){
-        return self::$db->fetchColumn($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim'), array('dsaqposition' => 'DESC'));
+        return self::$db->fetchColumn($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim'), 0 ,array('dsaqposition' => 'DESC'));
     }
     
     /**
