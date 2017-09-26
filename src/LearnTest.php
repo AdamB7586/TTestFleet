@@ -101,7 +101,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     protected function prevQuestion(){
         if($_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete('prev');}
         elseif($this->currentQuestion() != 1){
-            $prim = self::$db->select($this->questionsTable, array('dsaqposition' => array('<', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'DESC'));
+            $prim = self::$db->fetchColumn($this->questionsTable, array('dsaqposition' => array('<', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'DESC'));
         }
         else{$prim = $this->getLastQuestion();}
         return '<div class="prevquestion btn btn-theory" id="'.$prim.'"><span class="fa fa-angle-left fa-fw"></span><span class="hidden-xs"> Previous</span></div>';
