@@ -10,7 +10,6 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->theory->getTestResults();
         $this->theory->getUserAnswers();
         $userInfo = self::$user->getUserInfo();
-        if(!$this->theory->testresults['status']){redirect('/tests/theory.htm');}
         
         $this->PDFInfo();
         if($this->theory->testresults['status'] == 'pass'){
