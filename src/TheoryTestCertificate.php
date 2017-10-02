@@ -116,7 +116,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->pdf->SetFont('Arial','B', 9);
         $testheader = array('Question', 'Learning Section', 'Question No.', 'Status');
         foreach($this->theory->questions as $question => $prim){
-            if($this->useranswers[$question]['status'] == '4'){$correct = 'Correct';}else{$correct = 'Incorrect';}
+            if($this->theory->useranswers[$question]['status'] == '4'){$correct = 'Correct';}else{$correct = 'Incorrect';}
             $questioninfo = $this->theory->questionInfo($prim);
             $testdata[] = array($question, $questioninfo['cat'], $questioninfo['topic'], $correct);
         }
