@@ -21,6 +21,8 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
     
     protected $testType = 'fleet';
     
+    protected $uniqueTestID;
+    
     /**
      * Set up all of the components needed to create a Theory Test
      * @param Database $db This should be an instance of Database
@@ -33,6 +35,33 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
         parent::__construct($db, $layout, $user, $userID, $templateDir);
         self::$layout->addTemplateDir($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates' : $templateDir);
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
+    }
+    
+    /**
+     * Set the unique testID 
+     * @param int $testID This should be the test ID that you want to set as the current test
+     * @return $this
+     */
+    public function setTestID($testID){
+        if(is_numeric($testID)){
+            $this->uniqueTestID = intval($testID);
+        }
+        return $this;
+    }
+    
+    /**
+     * Returns the unique test ID for the test information you are retrieving
+     * @return int This is the unique test ID of the test
+     */
+    public function getTestID(){
+        if(is_int($this->uniqueTestID)){
+            return $this->uniqueTestID;
+        }
+        $testID = self::$db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()), array('id'), 0, array('started' => 'DESC'));
+        if(is_numeric($testID)){
+            $this->setTestID($testID);
+        }
+        return intval($this->uniqueTestID);
     }
 
     /**
@@ -97,7 +126,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      */
     public function getQuestions(){
         if(!isset($this->questions)){
-            $questions = self::$db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()), array('questions'), 0, array('started' => 'DESC'));
+            $questions = self::$db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('questions'));
             if($questions){
                 $this->questions = unserialize($questions);
                 return $this->questions;
@@ -112,7 +141,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      */
     public function getUserAnswers(){
         if(!isset($this->useranswers)){
-            $answers = self::$db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()), array('id', 'answers', 'question_no'), array('started' => 'DESC'));
+            $answers = self::$db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('id', 'answers', 'question_no'));
             if($answers){
                 $this->useranswers = unserialize($answers['answers']);
                 if(!isset($_SESSION['test'.$this->getTest()])){$_SESSION['test'.$this->getTest()] = $this->useranswers;}
@@ -129,7 +158,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      * @return boolean
      */
     protected function updateAnswers(){
-        return self::$db->update($this->progressTable, array('answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest()));
+        return self::$db->update($this->progressTable, array('answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()));
     }
     
     /**
@@ -232,7 +261,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
             if($type == 'taken'){
                 list($hours, $mins, $secs) = explode(':', $time);
                 $time = gmdate('H:i:s',($this->seconds - (($hours * 60 * 60) + ($mins * 60) + $secs)));
-                self::$db->update($this->progressTable, array('time_'.$type => $time), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType()));
+                self::$db->update($this->progressTable, array('time_'.$type => $time), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType(), 'id' => $this->getTestID()));
             }
             else{
                 $_SESSION['time_'.$type]['test'.$this->getTest()] = $time;
@@ -263,7 +292,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      * @return boolean|array If the test has been completed the test results will be returned as an array else will return false
      */
     public function getTestResults(){
-        $results = self::$db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => array('>', 0)), array('id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status'), array('started' => 'DESC'));
+        $results = self::$db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => array('>', 0), 'id' => $this->getTestID()), array('id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status'));
         if($results){
             $this->testresults = unserialize($results['results']);
             $this->testresults['id'] = $results['id'];
@@ -280,6 +309,6 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT
      * @return string Returns the time from the database
      */
     public function getTime($type = 'taken'){
-        return self::$db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()), array('time_'.$type), 0, array('started' => 'DESC'));
+        return self::$db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('time_'.$type));
     }
 }
