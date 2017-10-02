@@ -75,7 +75,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->overallResults();
     }
     
-    private function overallResults(){
+    protected function overallResults(){
         $header = array('Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status');
         foreach(self::$db->selectAll($this->theory->dsaCategoriesTable) as $group => $data){
             $correct = (int)$this->theory->testresults['dsa'][$data['section']]['correct'];
