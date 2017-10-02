@@ -2,8 +2,17 @@
 
 namespace TheoryTest\Fleet;
 
+use DBAL\Database;
+use Smarty;
+
 class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     protected $testType = 'FLEET';
+    
+    public function __construct(Database $db, Smarty $layout, $user, $testID, $userID = false) {
+        parent::__construct($db, $layout, $user, $testID, $userID);
+        $this->theory = new TheoryTest(self::$db, $layout, self::$user, $userID);
+        $this->theory->setTest($testID);
+    }
     
     public function generateCertificate(){
         $this->theory->getQuestions();
@@ -22,7 +31,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
             $this->pdf->SetFont('Arial','B', 18);
             $this->pdf->Cell(10, 14, '', 0); $this->pdf->Cell(28, 14, 'Candidate', 0);
             $this->pdf->Ln(12);
-            $this->certLine('Name:', $userInfo['first_name'].' '.$userInfo['last_name']);
+            $this->certLine('Name:', self::$user->getFirstname().' '.self::$user->getLastname());
             $this->pdf->Ln(10);
             $this->pdf->SetFont('Arial','B', 18);
             $this->pdf->Cell(10, 10, '', 0); $this->pdf->Cell(14, 10, 'Test', 0);
@@ -42,7 +51,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->pdf->AddPage('P', 'A4');
         $this->pdf->SetFont('Arial','B', 8);
         $detailsheader = array('Name', 'Test Name', 'Unique Test ID', 'Taken on Date/Time');
-        $details = array(array($userInfo['first_name'].' '.$userInfo['last_name'], strip_tags($this->theory->getTestName()), $this->theory->testresults['id'], date('d/m/Y g:i A', strtotime($this->theory->testresults['complete']))));
+        $details = array(array(self::$user->getFirstname().' '.self::$user->getLastname(), strip_tags($this->theory->getTestName()), $this->theory->testresults['id'], date('d/m/Y g:i A', strtotime($this->theory->testresults['complete']))));
         $tablewidths = array(52,52,39,47);
         $this->pdf->basicTable($detailsheader, $details, $tablewidths);
         $this->pdf->Ln();
@@ -51,12 +60,12 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->pdf->Ln(8);
         $this->pdf->SetFont('Arial','', 12);
         if($this->theory->testresults['status'] == 'pass'){
-            $this->pdf->Cell(184, 10, "Congratulations ".$userInfo['first_name']); $this->pdf->Ln(4);
+            $this->pdf->Cell(184, 10, "Congratulations ".self::$user->getFirstname()); $this->pdf->Ln(4);
             $this->pdf->Cell(184, 10, "You have passed this test with ".$this->theory->testresults['percent']['correct']."%."); $this->pdf->Ln(4);
             $this->pdf->Cell(184, 10, "You answered ".$this->theory->testresults['correct']." out of ".$this->theory->testresults['numquestions']." questions correctly");
         }
         else{
-            $this->pdf->Cell(184, 10, "Sorry ".$userInfo['first_name'].", but you have not passed this time."); $this->pdf->Ln(4);
+            $this->pdf->Cell(184, 10, "Sorry ".self::$user->getFirstname().", but you have not passed this time."); $this->pdf->Ln(4);
             $this->pdf->Cell(184, 10, "You answered ".$this->theory->testresults['correct'].' out of '.$this->theory->testresults['numquestions']." questions correctly, the pass rate is ".$this->theory->passmark." out of ".$this->theory->testresults['numquestions']);
         }
         $this->pdf->Ln(12);
@@ -66,7 +75,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->infoLine('Status:', strip_tags($this->theory->testStatus()));
         $this->infoLine('Questions:', $this->theory->testresults['numquestions']);
         $this->pdf->Ln(6);
-        if($this->testType != 'free'){$this->infoLine('Candidate:', $userInfo['first_name'].' '.$userInfo['last_name']);}
+        if($this->testType != 'free'){$this->infoLine('Candidate:', self::$user->getFirstname().' '.self::$user->getLastname());}
         $this->infoLine('Time Taken:', $this->theory->getTime());
         $this->pdf->Ln(16);
         $this->pdf->SetFont('Arial','B', 8);
@@ -108,7 +117,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->pdf->SetFont('Arial','B', 9);
         $testheader = array('Question', 'Learning Section', 'Question No.', 'Status');
         foreach($this->theory->questions as $question => $prim){
-            if(self::$useranswers[$question]['status'] == '4'){$correct = 'Correct';}else{$correct = 'Incorrect';}
+            if($this->useranswers[$question]['status'] == '4'){$correct = 'Correct';}else{$correct = 'Incorrect';}
             $questioninfo = $this->theory->questionInfo($prim);
             $testdata[] = array($question, $questioninfo['cat'], $questioninfo['topic'], $correct);
         }
