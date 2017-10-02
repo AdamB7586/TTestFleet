@@ -11,14 +11,13 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     public function __construct(Database $db, Smarty $layout, $user, $testID, $userID = false) {
         parent::__construct($db, $layout, $user, $testID, $userID);
         $this->theory = new TheoryTest(self::$db, $layout, self::$user, $userID);
-        $this->theory->setTest($testID);
+        $this->theory->setTestID($testID);
     }
     
     public function generateCertificate(){
         $this->theory->getQuestions();
         $this->theory->getTestResults();
         $this->theory->getUserAnswers();
-        $userInfo = self::$user->getUserInfo();
         
         $this->PDFInfo();
         if($this->theory->testresults['status'] == 'pass'){
