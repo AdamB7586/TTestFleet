@@ -118,6 +118,7 @@ UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '2' LIMIT
 UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '3' LIMIT 25)
 UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '4' LIMIT 25) ORDER BY RAND();");
         unset($_SESSION['test'.$this->getTest()]);
+        unset($_SESSION['question_no']);
         foreach($questions as $q => $question){
             $this->questions[($q + 1)] = $question['prim'];
         }
