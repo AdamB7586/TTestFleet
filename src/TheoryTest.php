@@ -49,6 +49,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
             unset($this->questions);
             $this->getUserAnswers();
             $this->getQuestions();
+            $this->getTestResults();
         }
         return $this;
     }
