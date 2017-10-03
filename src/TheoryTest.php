@@ -45,6 +45,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
     public function setTestID($testID){
         if(is_numeric($testID)){
             $this->uniqueTestID = intval($testID);
+            unset($_SESSION['test'.$this->getTest()]);
             unset($this->useranswers);
             unset($this->questions);
             $this->getUserAnswers();
