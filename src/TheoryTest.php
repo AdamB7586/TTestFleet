@@ -73,10 +73,22 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
         self::$user->checkUserAccess(100, 'fleet');
         if($this->anyExisting() === false){
             $this->chooseQuestions(1);
-            $testInfo = self::$db->select($this->progressTable, array('user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => 0));
-            $this->setTest($testInfo['id']);
+            $this->setTest($test);
         }
         return $this->buildTest();
+    }
+    
+    /**
+     * Creates the test report HTML if the test has been completed
+     * @param int $theorytest The test number you wish to view the report for
+     * @return string Returns the HTML for the test report for the given test ID
+     */
+    public function createTestReport($theorytest = 1) {
+        if($this->getTestResults()) {
+            $this->setTestName($this->testName);
+            return $this->buildReport(false);
+        }
+        return self::$layout->fetch('report'.DIRECTORY_SEPARATOR.'report-unavail.tpl');
     }
     
     /**
