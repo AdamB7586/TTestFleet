@@ -28,7 +28,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      */
     public function createNewTest($sectionNo = '1'){
         $this->clearSettings();
-        $this->chooseQuestions($sectionNo);
+        $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
         $learnName = self::$db->select('fleet_sections', array('section' => $sectionNo), array('name', 'free'));
         if($learnName['free'] == 0){self::$user->checkUserAccess(NULL, 'fleet');}
@@ -39,9 +39,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Gets the questions for the current section test
      * @param int $sectionNo This should be the section number for the test
-     * @param boolean $type This is set for compatibility with parent class
      */
-    protected function chooseQuestions($sectionNo, $type = false) {
+    protected function chooseStudyQuestions($sectionNo) {
         $this->testInfo['section'] = $sectionNo;
         setcookie('testinfo', serialize($this->testInfo), time() + 31536000, '/');
     }

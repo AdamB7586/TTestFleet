@@ -20,5 +20,8 @@
         "psr-4": {
             "TheoryTest\\Fleet\\": "tests/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
     }
 }

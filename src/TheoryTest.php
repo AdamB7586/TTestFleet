@@ -109,10 +109,9 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
     /**
      * Choose some random questions from each of the categories and insert them into the progress database
      * @param int $testNo This should be the test number you which to get the questions for
-     * @param boolean $type Added for compatibility
      * @return boolean
      */
-    protected function chooseQuestions($testNo, $type = false){
+    protected function chooseQuestions($testNo){
         self::$db->delete($this->progressTable, array('user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => 0));
         $questions = self::$db->query("(SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '1' LIMIT 25)
 UNION (SELECT `prim` FROM `".$this->questionsTable."` WHERE `dsacat` = '2' LIMIT 25)
