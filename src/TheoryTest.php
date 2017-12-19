@@ -77,7 +77,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      */
     public function createNewTest($test = 1){
         $this->clearSettings();
-        self::$user->checkUserAccess(100, 'fleet');
+        if(method_exists(self::$user, 'checkUserAccess')){self::$user->checkUserAccess(100, 'fleet');}
         if($this->anyExisting() === false){
             $this->chooseQuestions(1);
             $this->setTest($test);

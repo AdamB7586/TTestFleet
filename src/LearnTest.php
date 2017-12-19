@@ -31,7 +31,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
         $learnName = self::$db->select('fleet_sections', array('section' => $sectionNo), array('name', 'free'));
-        if($learnName['free'] == 0){self::$user->checkUserAccess(NULL, 'fleet');}
+        if($learnName['free'] == 0 && method_exists(self::$user, 'checkUserAccess')){self::$user->checkUserAccess(NULL, 'fleet');}
         $this->setTestName($learnName['name']);
         return $this->buildTest();
     }
