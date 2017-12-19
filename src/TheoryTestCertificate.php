@@ -2,17 +2,8 @@
 
 namespace TheoryTest\Fleet;
 
-use DBAL\Database;
-use Smarty;
-
 class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     protected $testType = 'FLEET';
-    
-    public function __construct(Database $db, Smarty $layout, $user, $testID, $userID = false) {
-        parent::__construct($db, $layout, $user, $testID, $userID);
-        $this->theory = new TheoryTest(self::$db, $layout, self::$user, $userID);
-        $this->theory->setTestID($testID);
-    }
     
     public function generateCertificate(){
         $this->theory->getQuestions();
