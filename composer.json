@@ -4,7 +4,7 @@
     "require": {
         "adamb/ttest": "^2.1"
     },
-    "license": "None",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Adam Binnersley",
