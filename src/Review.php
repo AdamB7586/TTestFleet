@@ -8,16 +8,21 @@ class Review extends \TheoryTest\Car\Review{
     
     public $noOfTests = 1;
     
-    protected $questionsTable = 'fleet_questions';
-    protected $DSACatTable = 'fleet_sections';
-    protected $progressTable = 'fleet_progress';
-    protected $testProgressTable = 'fleet_test_progress';
-    
     protected $testType = 'Fleet';
     
     public function getSectionTables(){
         return array(
             array('table' => 'fleet_sections', 'name' => 'DVSA Category', 'section' => 'dsa', 'sectionNo' => 'dsacat')
         );
+    }
+    
+    /**
+     * Sets the tables
+     */
+    protected function setTables() {
+        $this->questionsTable = $this->config->table_fleet_questions;
+        $this->learningProgressTable = $this->config->table_fleet_progress;
+        $this->progressTable = $this->config->table_fleet_test_progress;
+        $this->dvsaCatTable = $this->config->table_fleet_dvsa_sections;
     }
 }

@@ -3,13 +3,10 @@
 namespace TheoryTest\Fleet;
 
 use DBAL\Database;
+use Configuration\Config;
 use Smarty;
 
-class LearnTest extends \TheoryTest\Car\LearnTest{
-    public $questionsTable = 'fleet_questions';
-    public $progressTable = 'fleet_progress';
-    public $dsaCategoriesTable = 'fleet_sections';
-    
+class LearnTest extends \TheoryTest\Car\LearnTest{    
     /**
      * Set up all of the components needed to create a Theory Test
      * @param Database $db This should be an instance of Database
@@ -17,9 +14,19 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param object $user This should be and instance if the User Class
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
      */
-    public function __construct(Database $db, Smarty $layout, $user, $userID = false) {
-        parent::__construct($db, $layout, $user, $userID);
+    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false) {
+        parent::__construct($db, $config, $layout, $user, $userID);
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
+    }
+    
+    /**
+     * Sets the tables
+     */
+    protected function setTables() {
+        $this->questionsTable = $this->config->table_fleet_questions;
+        $this->learningProgressTable = $this->config->table_fleet_progress;
+        $this->progressTable = $this->config->table_fleet_test_progress;
+        $this->dvsaCatTable = $this->config->table_fleet_dvsa_sections;
     }
     
     /**
@@ -30,8 +37,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
         $this->clearSettings();
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
-        $learnName = self::$db->select('fleet_sections', array('section' => $sectionNo), array('name', 'free'));
-        if($learnName['free'] == 0 && method_exists(self::$user, 'checkUserAccess')){self::$user->checkUserAccess(NULL, 'fleet');}
+        $learnName = $this->db->select($this->dvsaCatTable, array('section' => $sectionNo), array('name', 'free'));
+        if($learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')){$this->user->checkUserAccess(NULL, 'fleet');}
         $this->setTestName($learnName['name']);
         return $this->buildTest();
     }
@@ -51,7 +58,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return array|boolean Returns question data as array if data exists else returns false
      */
     protected function getQuestionData($prim){
-        return self::$db->select($this->questionsTable, array('prim' => $prim), array('prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid'));
+        return $this->db->select($this->questionsTable, array('prim' => $prim), array('prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid'));
     }
     
     /**
@@ -77,7 +84,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return int This should be the number of questions for the section
      */
     public function numQuestions(){
-        return count(self::$db->selectAll($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim')));
+        return count($this->db->selectAll($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim')));
     }
     
     /**
@@ -87,7 +94,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      */
     protected function currentQuestion(){
         if(!isset($this->current)){
-            $currentnum = self::$db->select($this->questionsTable, array('prim' => $this->currentPrim, 'dsacat' => $this->testInfo['section']), array('dsaqposition'));
+            $currentnum = $this->db->select($this->questionsTable, array('prim' => $this->currentPrim, 'dsacat' => $this->testInfo['section']), array('dsaqposition'));
             $this->current = $currentnum['dsaqposition'];
         }
         return $this->current;
@@ -100,7 +107,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     protected function prevQuestion(){
         if($_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete('prev');}
         elseif($this->currentQuestion() != 1){
-            $prim = self::$db->fetchColumn($this->questionsTable, array('dsaqposition' => array('<', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'DESC'));
+            $prim = $this->db->fetchColumn($this->questionsTable, array('dsaqposition' => array('<', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'DESC'));
         }
         else{$prim = $this->getLastQuestion();}
         return '<div class="prevquestion btn btn-theory" id="'.$prim.'"><span class="fa fa-angle-left fa-fw"></span><span class="hidden-xs"> Previous</span></div>';
@@ -113,7 +120,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     protected function nextQuestion(){
         if($_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete();}
         elseif($this->currentQuestion() < $this->numQuestions()){
-            $prim = self::$db->fetchColumn($this->questionsTable, array('dsaqposition' => array('>', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'ASC'));
+            $prim = $this->db->fetchColumn($this->questionsTable, array('dsaqposition' => array('>', $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), 0, array('dsaqposition' => 'ASC'));
         }
         else{$prim = $this->getFirstQuestion();}
         return '<div class="nextquestion btn btn-theory" id="'.$prim.'"><span class="hidden-xs">Next </span><span class="fa fa-angle-right fa-fw"></span></div>';
@@ -128,14 +135,14 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
         if(strtolower($nextOrPrev) == 'next'){$dir = '>'; $sort = 'ASC'; $start = '0';}
         else{$dir = '<'; $sort = 'DESC'; $start = '100000';}
         
-        $questions = self::$db->selectAll($this->questionsTable, array('dsaqposition' => array($dir, $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), array('dsaqposition' => $sort));
+        $questions = $this->db->selectAll($this->questionsTable, array('dsaqposition' => array($dir, $this->currentQuestion()), 'dsacat' => $this->testInfo['section']), array('prim'), array('dsaqposition' => $sort));
         foreach($questions as $question){
             if($this->useranswers[$question['prim']]['status'] <= 1){
                 return $question['prim'];
             }
         }
         
-        $questions = self::$db->selectAll($this->questionsTable, array('dsaqposition' => array($dir, $start), 'dsacat' => $this->testInfo['section']), array('prim'), array('dsaqposition' => $sort));
+        $questions = $this->db->selectAll($this->questionsTable, array('dsaqposition' => array($dir, $start), 'dsacat' => $this->testInfo['section']), array('prim'), array('dsaqposition' => $sort));
         foreach($questions as $question){
             if($this->useranswers[$question['prim']]['status'] <= 1){
                 return $question['prim'];
@@ -149,7 +156,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return int Returns the prim number of the first question in the current section
      */
     protected function getFirstQuestion(){
-        return self::$db->fetchColumn($this->questionsTable, array('dsaqposition' => '1', 'dsacat' => $this->testInfo['section']), array('prim'));
+        return $this->db->fetchColumn($this->questionsTable, array('dsaqposition' => '1', 'dsacat' => $this->testInfo['section']), array('prim'));
     }
     
     /**
@@ -157,7 +164,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return int Returns the prim number for the last question
      */
     protected function getLastQuestion(){
-        return self::$db->fetchColumn($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim'), 0 ,array('dsaqposition' => 'DESC'));
+        return $this->db->fetchColumn($this->questionsTable, array('dsacat' => $this->testInfo['section']), array('prim'), 0 ,array('dsaqposition' => 'DESC'));
     }
     
     /**

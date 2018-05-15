@@ -2,6 +2,9 @@
 
 namespace TheoryTest\Fleet;
 
+/**
+ * @codeCoverageIgnore
+ */
 class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     protected $testType = 'FLEET';
     
@@ -75,7 +78,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     
     protected function overallResults(){
         $header = array('Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status');
-        foreach(self::$db->selectAll($this->theory->dsaCategoriesTable) as $group => $data){
+        foreach($this->db->selectAll($this->theory->dsaCategoriesTable) as $group => $data){
             $correct = (int)$this->theory->testresults['dsa'][$data['section']]['correct'];
             $incorrect = (int)$this->theory->testresults['dsa'][$data['section']]['incorrect'];
             $total = $correct + $incorrect;
