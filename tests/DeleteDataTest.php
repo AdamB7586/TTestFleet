@@ -8,7 +8,7 @@ class DeleteDataTest extends SetUp{
     protected $delete;
     
     protected function setUp() {
-        $this->delete = new DeleteData(self::$db, self::$user);
+        $this->delete = new DeleteData(self::$db, self::$config, self::$user);
     }
     
     protected function tearDown() {
