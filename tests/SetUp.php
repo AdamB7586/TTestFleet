@@ -23,7 +23,7 @@ class SetUp extends TestCase{
         }
         if(self::$db->count('users') < 1){
             self::$db->query(file_get_contents(dirname(dirname(__FILE__)).'/vendor/adamb/user/database/database_mysql.sql'));
-//            self::$db->query(file_get_contents(dirname(dirname(__FILE__)).'/database/database_mysql.sql'));
+            self::$db->query(file_get_contents(dirname(dirname(__FILE__)).'/database/database_mysql.sql'));
 //            self::$db->query(file_get_contents(dirname(__FILE__).'/sample_data/data.sql'));
         }
         self::$config = new Config(self::$db);
