@@ -22,7 +22,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Sets the tables
      */
-    protected function setTables() {
+    public function setTables() {
         $this->questionsTable = $this->config->table_fleet_questions;
         $this->learningProgressTable = $this->config->table_fleet_progress;
         $this->progressTable = $this->config->table_fleet_test_progress;
@@ -46,8 +46,9 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Gets the questions for the current section test
      * @param int $sectionNo This should be the section number for the test
+     * @param string $type Required for compatibility with parent class
      */
-    protected function chooseStudyQuestions($sectionNo) {
+    protected function chooseStudyQuestions($sectionNo, $type = '') {
         $this->testInfo['section'] = $sectionNo;
         setcookie('testinfo', serialize($this->testInfo), time() + 31536000, '/');
     }
