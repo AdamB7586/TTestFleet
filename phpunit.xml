@@ -49,6 +49,9 @@
         <const name="SMTP_USERNAME" value="email@example.com" />
         <const name="SMTP_PASSWORD" value="password" />
         
+        <const name="SESSION_NAME" value="ttest" />
+        <const name="DOMAIN" value="mywebsite.co.uk" />
+        
         <var name="LOGIN_EMAIL" value="test@example.com" />
         <var name="LOGIN_PASSWORD" value="Password#123" />
     </php>
