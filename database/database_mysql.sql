@@ -1,4 +1,16 @@
-DROP TABLE IF EXISTS `fleet_progress`;
+CREATE TABLE IF NOT EXISTS `config` (
+  `setting` varchar(100) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`setting`),
+  UNIQUE KEY `setting` (`setting`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `config` (`setting`, `value`) VALUES
+('table_fleet_progress', 'fleet_progress'),
+('table_fleet_test_progress', 'fleet_test_progress'),
+('table_fleet_dvsa_sections', 'fleet_sections'),
+('table_fleet_questions', 'fleet_questions');
+
 CREATE TABLE IF NOT EXISTS `fleet_progress` (
   `user_id` int(11) UNSIGNED NOT NULL,
   `progress` longtext NOT NULL,
@@ -6,7 +18,6 @@ CREATE TABLE IF NOT EXISTS `fleet_progress` (
   UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `fleet_questions`;
 CREATE TABLE IF NOT EXISTS `fleet_questions` (
   `prim` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `dsacat` tinyint(3) UNSIGNED NOT NULL,
@@ -33,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `fleet_questions` (
   KEY `mockno` (`mockno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `fleet_sections`;
 CREATE TABLE IF NOT EXISTS `fleet_sections` (
   `section` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
@@ -42,7 +52,6 @@ CREATE TABLE IF NOT EXISTS `fleet_sections` (
   UNIQUE KEY `dsacat` (`section`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `fleet_test_progress`;
 CREATE TABLE IF NOT EXISTS `fleet_test_progress` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) UNSIGNED NOT NULL,
