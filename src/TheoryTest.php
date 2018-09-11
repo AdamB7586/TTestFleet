@@ -148,7 +148,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
     
     /**
      * Gets the questions array from the database if $this->questions is not set
-     * @return array Returns the questions array
+     * @return array|false Returns the questions array if exists else returns false
      */
     public function getQuestions(){
         if(!isset($this->questions)){
@@ -159,11 +159,12 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
             }
             return false;
         }
+        return $this->questions;
     }
     
     /**
      * Returns the current users answers for the current test
-     * @return array Returns the current users answers for the current test
+     * @return array|false Returns the current users answers for the current test if exists else returns false
      */
     public function getUserAnswers(){
         if(!isset($this->useranswers)){
@@ -177,11 +178,12 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
             }
             return false;
         }
+        return $this->useranswers;
     }
     
     /**
      * Updates the useranswers field in the progress table in the database
-     * @return boolean
+     * @return boolean If updated successfully returns true else returns false
      */
     protected function updateAnswers(){
         return $this->db->update($this->progressTable, array('answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()));
