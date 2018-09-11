@@ -233,8 +233,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      */
     protected function flagHintButton($prim){
         if($this->review != 'answers'){
-            if($this->questionFlagged($prim)){$flagged = ' flagged';}
-            return '<div class="flag'.$flagged.' btn btn-theory"><span class="fa fa-flag fa-fw"></span><span class="hidden-xs"> Flag Question</span></div>';
+            return '<div class="flag'.($this->questionFlagged($prim) ? ' flagged' : '').' btn btn-theory"><span class="fa fa-flag fa-fw"></span><span class="hidden-xs"> Flag Question</span></div>';
         }
         return '<div class="blank"></div>';
     }
@@ -255,7 +254,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
         
         $pass = true;
         foreach($this->testresults['dsa'] as $category => $value){
-            if($pass != false){
+            if($pass !== false){
                 if($value['correct'] < $this->passmarkPerCat){$pass = false;}
             }
         }
@@ -269,7 +268,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
         $this->testresults['percent']['incorrect'] = round(($this->testresults['incorrect'] / $this->testresults['numquestions']) * 100);
         $this->testresults['percent']['flagged'] = round(($this->testresults['flagged'] / $this->testresults['numquestions']) * 100);
         $this->testresults['percent']['incomplete'] = round(($this->testresults['incomplete'] / $this->testresults['numquestions']) * 100);
-        if($this->numCorrect() >= $this->passmark && $pass == true){
+        if($this->numCorrect() >= $this->passmark && $pass === true){
             $this->testresults['status'] = 'pass';
             $status = 1;
         }
