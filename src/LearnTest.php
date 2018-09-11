@@ -10,6 +10,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Set up all of the components needed to create a Theory Test
      * @param Database $db This should be an instance of Database
+     * @param Config $config This should be an instance of the config class
      * @param Smarty $layout This needs to be an instance of Smarty Templating
      * @param object $user This should be and instance if the User Class
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
@@ -90,7 +91,6 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     
     /**
      * Returns the current question number
-     * @param int $prim This should be the current questions unique prim number
      * @return int Returns the current question number
      */
     protected function currentQuestion(){
@@ -173,8 +173,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return string
      */
     protected function extraContent(){
-        if($_COOKIE['skipCorrect'] == 1){$skipcorrect = ' flagged';}
-        return '</div></div><div class="row"><div><div class="col-xs-12 skipcorrectclear"><div class="skipcorrect btn btn-theory'.$skipcorrect.'">Skip Correct</div></div>';
+        return '</div></div><div class="row"><div><div class="col-xs-12 skipcorrectclear"><div class="skipcorrect btn btn-theory'.($_COOKIE['skipCorrect'] == 1 ? ' flagged' : '').'">Skip Correct</div></div>';
     }
     
     /**

@@ -10,6 +10,10 @@ class Review extends \TheoryTest\Car\Review{
     
     protected $testType = 'Fleet';
     
+    /**
+     * Returns the sections to be displayed within the table
+     * @return array The list of sections for the table will be returned
+     */
     public function getSectionTables(){
         return array(
             array('table' => 'fleet_sections', 'name' => 'DVSA Category', 'section' => 'dsa', 'sectionNo' => 'dsacat')
