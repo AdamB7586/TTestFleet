@@ -30,7 +30,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      */
     public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false) {
         parent::__construct($db, $config, $layout, $user, $userID, $templateDir);
-        $this->layout->addTemplateDir($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates' : $templateDir);
+        $this->layout->addTemplateDir(($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates' : $templateDir), 'fleettheory');
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
     }
     
