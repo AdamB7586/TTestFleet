@@ -15,8 +15,9 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param object $user This should be and instance if the User Class
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
      */
-    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false) {
-        parent::__construct($db, $config, $layout, $user, $userID);
+    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false, $theme = 'bootstrap') {
+        parent::__construct($db, $config, $layout, $user, $userID, $templateDir, $theme);
+        $this->layout->addTemplateDir(($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates'.DS.$theme : $templateDir), 'theory');
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
     }
     

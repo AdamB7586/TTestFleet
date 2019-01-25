@@ -28,9 +28,9 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
      * @param string|false $templateDir If you want to change the template location set this location here else set to false
      */
-    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false) {
+    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false, $theme = 'bootstrap') {
         parent::__construct($db, $config, $layout, $user, $userID, $templateDir);
-        $this->layout->addTemplateDir(($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates' : $templateDir), 'fleettheory');
+        $this->layout->addTemplateDir(($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates'.DS.$theme : $templateDir), 'fleettheory');
         $this->setImagePath(ROOT.DS.'images'.DS.'fleet'.DS);
     }
     
