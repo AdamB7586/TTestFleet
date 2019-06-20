@@ -14,7 +14,7 @@ class SetUp extends TestCase{
     protected static $user;
     protected static $template;
     
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         self::$db = new Database($GLOBALS['DB_HOST'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'], $GLOBALS['DB_DBNAME']);
         if(!self::$db->isConnected()){
              $this->markTestSkipped(
@@ -32,7 +32,7 @@ class SetUp extends TestCase{
         self::$user = new User(self::$db);
     }
     
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass(): void {
         self::$db = null;
         self::$template = null;
         self::$user = null;
