@@ -71,7 +71,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
         if(is_int($this->uniqueTestID)){
             return $this->uniqueTestID;
         }
-        $testID = $this->db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()), array('id'), 0, array('started' => 'DESC'));
+        $testID = $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType()], ['id'], 0, ['started' => 'DESC']);
         if(is_numeric($testID)){
             $this->setTestID($testID);
         }
@@ -110,7 +110,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      * @return boolean If existing tests are deleted will return true else will return false
      */
     public function startNewTest() {
-        return $this->db->delete($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => 0));
+        return $this->db->delete($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => 0]);
     }
     
     /**
@@ -119,7 +119,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      * @return boolean
      */
     protected function chooseQuestions($testNo){
-        $this->db->delete($this->progressTable, array('user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => 0));
+        $this->db->delete($this->progressTable, ['user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => 0]);
         $questions = $this->db->query("(SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '1' LIMIT 25)
 UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '2' LIMIT 25)
 UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '3' LIMIT 25)
@@ -129,7 +129,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
         foreach($questions as $q => $question){
             $this->questions[($q + 1)] = $question['prim'];
         }
-        return $this->db->insert($this->progressTable, array('user_id' => $this->getUserID(), 'questions' => serialize($this->questions), 'answers' => serialize(array()), 'test_id' => $this->testNo, 'started' => date('Y-m-d H:i:s'), 'status' => 0, 'type' => $this->getTestType()));
+        return $this->db->insert($this->progressTable, ['user_id' => $this->getUserID(), 'questions' => serialize($this->questions), 'answers' => serialize([]), 'test_id' => $this->testNo, 'started' => date('Y-m-d H:i:s'), 'status' => 0, 'type' => $this->getTestType()]);
     }
     
     /**
@@ -137,7 +137,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return string|boolean
      */
     protected function anyExisting(){
-        $existing = $this->db->select($this->progressTable, array('user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => array('<=', 1)));
+        $existing = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => ['<=', 1]]);
         if($existing){
             $this->exists = true;
             if($existing['status'] == 1){return 'passed';}
@@ -152,7 +152,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      */
     public function getQuestions(){
         if(!isset($this->questions)){
-            $questions = $this->db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('questions'));
+            $questions = $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()], ['questions']);
             if($questions){
                 $this->questions = unserialize($questions);
                 return $this->questions;
@@ -168,7 +168,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      */
     public function getUserAnswers(){
         if(!isset($this->useranswers)){
-            $answers = $this->db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('id', 'answers', 'question_no'));
+            $answers = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()], ['id', 'answers', 'question_no']);
             if($answers){
                 $this->useranswers = unserialize($answers['answers']);
                 if(!isset($_SESSION['test'.$this->getTest()])){$_SESSION['test'.$this->getTest()] = $this->useranswers;}
@@ -186,7 +186,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return boolean If updated successfully returns true else returns false
      */
     protected function updateAnswers(){
-        return $this->db->update($this->progressTable, array('answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()));
+        return $this->db->update($this->progressTable, ['answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()]);
     }
     
     /**
@@ -195,7 +195,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return array|boolean Returns question data as array if data exists else returns false
      */
     protected function getQuestionData($prim){
-        return  $this->db->select($this->questionsTable, array('prim' => $prim), array('prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid'));
+        return $this->db->select($this->questionsTable, ['prim' => $prim], ['prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid']);
     }
     
     /**
@@ -276,7 +276,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
             $this->testresults['status'] = 'fail';
             $status = 2;
         }
-        $this->db->update($this->progressTable, array('status' => $status, 'results' => serialize($this->testresults), 'complete' => date('Y-m-d H:i:s'), 'totalscore' => $this->numCorrect()), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType()));
+        $this->db->update($this->progressTable, ['status' => $status, 'results' => serialize($this->testresults), 'complete' => date('Y-m-d H:i:s'), 'totalscore' => $this->numCorrect()], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType()]);
     }
     
     /**
@@ -288,7 +288,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
             if($type == 'taken'){
                 list($hours, $mins, $secs) = explode(':', $time);
                 $time = gmdate('H:i:s',($this->seconds - (($hours * 60 * 60) + ($mins * 60) + $secs)));
-                $this->db->update($this->progressTable, array('time_'.$type => $time), array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType(), 'id' => $this->getTestID()));
+                $this->db->update($this->progressTable, ['time_'.$type => $time], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0, 'type' => $this->getTestType(), 'id' => $this->getTestID()]);
             }
             else{
                 $_SESSION['time_'.$type]['test'.$this->getTest()] = $time;
@@ -311,7 +311,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return string Returns either the print certificate of results button depending on how the user did on the test
      */
     protected function printCertif(){
-        return '<div class="blank"></div>';
+        return false;
     }
     
     /**
@@ -319,7 +319,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return boolean|array If the test has been completed the test results will be returned as an array else will return false
      */
     public function getTestResults(){
-        $results = $this->db->select($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => array('>', 0), 'id' => $this->getTestID()), array('id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status'));
+        $results = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => ['>', 0], 'id' => $this->getTestID()], ['id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status']);
         if($results){
             $this->testresults = unserialize($results['results']);
             $this->testresults['id'] = $results['id'];
@@ -336,6 +336,6 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return string Returns the time from the database
      */
     public function getTime($type = 'taken'){
-        return $this->db->fetchColumn($this->progressTable, array('user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()), array('time_'.$type));
+        return $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'id' => $this->getTestID()], ['time_'.$type]);
     }
 }

@@ -43,9 +43,9 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         
         $this->pdf->AddPage('P', 'A4');
         $this->pdf->SetFont('Arial','B', 8);
-        $detailsheader = array('Name', 'Test Name', 'Unique Test ID', 'Taken on Date/Time');
-        $details = array(array($this->certUsername, strip_tags($this->theory->getTestName()), $this->theory->testresults['id'], date('d/m/Y g:i A', strtotime($this->theory->testresults['complete']))));
-        $tablewidths = array(52,52,39,47);
+        $detailsheader = ['Name', 'Test Name', 'Unique Test ID', 'Taken on Date/Time'];
+        $details = [[$this->certUsername, strip_tags($this->theory->getTestName()), $this->theory->testresults['id'], date('d/m/Y g:i A', strtotime($this->theory->testresults['complete']))]];
+        $tablewidths = [52,52,39,47];
         $this->pdf->basicTable($detailsheader, $details, $tablewidths);
         $this->pdf->Ln();
         $this->pdf->SetFont('Arial','B', 16);
@@ -77,7 +77,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     }
     
     protected function overallResults(){
-        $header = array('Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status');
+        $header = ['Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status'];
         foreach($this->db->selectAll($this->theory->dsaCategoriesTable) as $group => $data){
             $correct = (int)$this->theory->testresults['dsa'][$data['section']]['correct'];
             $incorrect = (int)$this->theory->testresults['dsa'][$data['section']]['incorrect'];
@@ -85,13 +85,13 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
 
             if($correct >= $this->theory->passmarkPerCat){$groupstatus = 'Passed';}
             else{$groupstatus = 'Failed';}
-            $groupdata[] = array($data['section'], substr($data['name'], 0, 53), $correct, $incorrect, $total, number_format((($correct / $total) * 100), 0).'%', $groupstatus);
+            $groupdata[] = [$data['section'], substr($data['name'], 0, 53), $correct, $incorrect, $total, number_format((($correct / $total) * 100), 0).'%', $groupstatus];
             
             $totalcorrect = $totalcorrect + $correct;
             $totalincorrect = $totalincorrect + $incorrect;
             $totalq = $totalq + $total;
         }
-        $widths = array(14,78,19,19,19,20,21);
+        $widths = [14,78,19,19,19,20,21];
         $this->pdf->basicTable($header, $groupdata, $widths, 6, 2);
         $first = true;
         $grouppercent = round(($totalcorrect / $totalq) * 100);
@@ -99,7 +99,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         if($this->theory->testresults['status'] == 'pass'){$status = 'Passed';}
         else{$status = 'Failed';}
         
-        $overall = array('', 'Overall Status', $totalcorrect, $totalincorrect, $totalq, $grouppercent.'%', $status);
+        $overall = ['', 'Overall Status', $totalcorrect, $totalincorrect, $totalq, $grouppercent.'%', $status];
         $this->pdf->SetFont('Arial','B', 9);
         foreach($widths as $col){
             if($first == true){$first = false; $currentvalue = current($overall);}else{$currentvalue = next($overall);}
@@ -108,12 +108,12 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         
         $this->pdf->AddPage('P', 'A4');
         $this->pdf->SetFont('Arial','B', 9);
-        $testheader = array('Question', 'Learning Section', 'Question No.', 'Status');
+        $testheader = ['Question', 'Learning Section', 'Question No.', 'Status'];
         foreach($this->theory->questions as $question => $prim){
             if($this->theory->useranswers[$question]['status'] == '4'){$correct = 'Correct';}else{$correct = 'Incorrect';}
             $questioninfo = $this->theory->questionInfo($prim);
-            $testdata[] = array($question, $questioninfo['cat'], $questioninfo['topic'], $correct);
+            $testdata[] = [$question, $questioninfo['cat'], $questioninfo['topic'], $correct];
         }
-        $this->pdf->basicTable($testheader, $testdata, array(22,98,30,40), 5, 2);
+        $this->pdf->basicTable($testheader, $testdata, [22,98,30,40], 5, 2);
     }
 }
