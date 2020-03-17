@@ -195,7 +195,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return array|boolean Returns question data as array if data exists else returns false
      */
     protected function getQuestionData($prim){
-        return $this->db->select($this->questionsTable, ['prim' => $prim], ['prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid']);
+        return $this->db->select($this->questionsTable, ['prim' => $prim]);
     }
     
     /**
@@ -232,10 +232,10 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return string Returns the flag hint button if it should be displayed else will return blank spacer
      */
     protected function flagHintButton($prim){
-        if($this->review != 'answers'){
-            return '<div class="flag'.($this->questionFlagged($prim) ? ' flagged' : '').' btn btn-theory"><span class="fa fa-flag fa-fw"></span><span class="hidden-xs"> Flag Question</span></div>';
+        if($this->review !== 'answers') {
+            return ['text' => 'Flag Question', 'class' => 'flag'.($this->questionFlagged($prim) ? ' flagged' : ''), 'icon' => 'flag'];
         }
-        return '<div class="blank"></div>';
+        return false;
     }
     
     /**
