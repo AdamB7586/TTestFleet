@@ -34,8 +34,9 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Creates a new test for the 
      * @param int $sectionNo This should be the section number for the test
+     * @param mixed $type Added to make compatible with parent - not currently used
      */
-    public function createNewTest($sectionNo = '1'){
+    public function createNewTest($sectionNo = '1', $type = false){
         $this->clearSettings();
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
@@ -61,7 +62,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return array|boolean Returns question data as array if data exists else returns false
      */
     protected function getQuestionData($prim){
-        return $this->db->select($this->questionsTable, ['prim' => $prim], ['prim', 'question', 'mark', 'option1', 'option2', 'option3', 'option4', 'answerletters', 'format', 'dsaimageid']);
+        return $this->db->select($this->questionsTable, ['prim' => $prim]);
     }
     
     /**
@@ -111,7 +112,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['<', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'DESC']);
         }
         else{$prim = $this->getLastQuestion();}
-        return '<div class="prevquestion btn btn-theory" id="'.$prim.'"><span class="fa fa-angle-left fa-fw"></span><span class="hidden-xs"> Previous</span></div>';
+        return ['id' => $prim, 'text' => 'Previous', 'icon' => 'angle-left'];
     }
     
     /**
@@ -124,7 +125,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['>', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'ASC']);
         }
         else{$prim = $this->getFirstQuestion();}
-        return '<div class="nextquestion btn btn-theory" id="'.$prim.'"><span class="hidden-xs">Next </span><span class="fa fa-angle-right fa-fw"></span></div>';
+        return ['id' => $prim, 'text' => 'Next', 'icon' => 'angle-right'];
     }
     
     /**
