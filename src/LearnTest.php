@@ -40,8 +40,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
         $this->clearSettings();
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
-        $learnName = $this->db->select($this->dvsaCatTable, ['section' => $sectionNo], ['name', 'free']);
-        if($learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')){$this->user->checkUserAccess(NULL, 'fleet');}
+        $learnName = $this->db->select($this->dvsaCatTable, ['section' => $sectionNo]);
+        if(isset($learnName['free']) && $learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')){$this->user->checkUserAccess(NULL, 'fleet');}
         $this->setTestName($learnName['name']);
         return $this->buildTest();
     }
@@ -107,7 +107,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return string Returns the previous question HTML with the correct prim number for the previous question
      */
     protected function prevQuestion(){
-        if($_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete('prev');}
+        if(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete('prev');}
         elseif($this->currentQuestion() != 1){
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['<', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'DESC']);
         }
@@ -120,7 +120,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return string Returns the next question HTML with the correct prim number for the next question
      */
     protected function nextQuestion(){
-        if($_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete();}
+        if(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete();}
         elseif($this->currentQuestion() < $this->numQuestions()){
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['>', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'ASC']);
         }
@@ -174,7 +174,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @return string
      */
     protected function extraContent(){
-        return '</div></div><div class="row"><div><div class="col-xs-12 skipcorrectclear"><div class="skipcorrect btn btn-theory'.($_COOKIE['skipCorrect'] == 1 ? ' flagged' : '').'">Skip Correct</div></div>';
+        return '</div></div><div class="row"><div><div class="col-xs-12 skipcorrectclear"><div class="skipcorrect btn btn-theory'.(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1 ? ' flagged' : '').'">Skip Correct</div></div>';
     }
     
     /**
