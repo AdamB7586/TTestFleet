@@ -197,24 +197,6 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
     protected function getQuestionData($prim){
         return $this->db->select($this->questionsTable, ['prim' => $prim]);
     }
-    
-    /**
-     * Make sure the audio doesn't appear as no audio currently exists for the fleet questions
-     * @return boolean Returns false as no fleet audio exists
-     */
-    protected function audioButton(){
-        return false;
-    }
-    
-    /**
-     * Returns the HTML5 audio HTML information as a string
-     * @param int $prim This should be the question prim number
-     * @param string $letter This should be the letter of the question or answer
-     * @return string Returns nothing as no audio exists for fleet
-     */
-    protected function addAudio($prim, $letter){
-        return '';
-    }
    
     /**
      * Returns the correct HTML for the DSA explanation in the review section

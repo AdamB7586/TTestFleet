@@ -4,7 +4,7 @@ namespace TheoryTest\Fleet;
 
 class Review extends \TheoryTest\Car\Review{
     
-    public $where = array();
+    public $where = [];
     
     public $noOfTests = 1;
     

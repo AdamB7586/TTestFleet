@@ -2,7 +2,7 @@
     "name": "adamb/ttestfleet",
     "type": "library",
     "require": {
-        "adamb/ttest": "^2.1"
+        "adamb/ttest": "^3.0"
     },
     "license": "proprietary",
     "authors": [
@@ -22,6 +22,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.2"
+        "phpunit/phpunit": "*"
     }
 }
