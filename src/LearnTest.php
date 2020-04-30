@@ -40,7 +40,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
         $this->clearSettings();
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
-        $learnName = $this->db->select($this->dvsaCatTable, ['section' => $sectionNo]);
+        $learnName = $this->getSectionInfo($this->dvsaCatTable, $sectionNo);
         if(isset($learnName['free']) && $learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')){$this->user->checkUserAccess(NULL, 'fleet');}
         $this->setTestName($learnName['name']);
         return $this->buildTest();
