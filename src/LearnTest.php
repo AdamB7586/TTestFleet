@@ -6,7 +6,8 @@ use DBAL\Database;
 use Configuration\Config;
 use Smarty;
 
-class LearnTest extends \TheoryTest\Car\LearnTest{    
+class LearnTest extends \TheoryTest\Car\LearnTest{
+    protected $scriptVar = 'fleetlearn';
     /**
      * Set up all of the components needed to create a Theory Test
      * @param Database $db This should be an instance of Database
@@ -63,24 +64,6 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      */
     protected function getQuestionData($prim){
         return $this->db->select($this->questionsTable, ['prim' => $prim]);
-    }
-    
-    /**
-     * Make sure the audio doesn't appear as no audio currently exists for the fleet questions
-     * @return boolean Returns false as no fleet audio exists
-     */
-    protected function audioButton(){
-        return false;
-    }
-    
-    /**
-     * Returns the HTML5 audio information as a string
-     * @param int $prim This should be the question prim number
-     * @param string $letter This should be the letter of the question or answer
-     * @return boolean Returns false as no audio exists for fleet
-     */
-    protected function addAudio($prim, $letter){
-        return false;
     }
     
     /**
