@@ -112,7 +112,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest{
      * @return boolean If existing tests are deleted will return true else will return false
      */
     public function startNewTest() {
-        return $this->db->delete($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => 0]);
+        return json_encode($this->db->delete($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'type' => $this->getTestType(), 'status' => 0]));
     }
     
     /**
@@ -188,7 +188,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
      * @return boolean If updated successfully returns true else returns false
      */
     protected function updateAnswers(){
-        return $this->db->update($this->progressTable, ['answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()]);
+        return json_encode($this->db->update($this->progressTable, ['answers' => serialize($_SESSION['test'.$this->getTest()]), 'time_remaining' => $_SESSION['time_remaining']['test'.$this->getTest()], 'question_no' => $_SESSION['question_no']['test'.$this->getTest()]], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()]));
     }
     
     /**
