@@ -171,7 +171,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     
     /**
      * Returns any related information about the current question
-     * @param string $explanation This should be the DSA explanation for the database as it has already been retrieved
+     * @param string $explanation This should be the DVSA explanation for the database as it has already been retrieved
      * @param int $prim This should be the questions unique prim number
      * @return boolean Should only return false as no fleet explanations exist
      */

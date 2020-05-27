@@ -201,8 +201,8 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
     }
    
     /**
-     * Returns the correct HTML for the DSA explanation in the review section
-     * @param string $explanation Should be the DSA explanation for the particular question
+     * Returns the correct HTML for the DVSA explanation in the review section
+     * @param string $explanation Should be the DVSA explanation for the particular question
      * @param int $prim Should be the prim number of the current question
      * @return string|boolean Returns the HTML string if in the review section else returns false
      */
@@ -232,12 +232,12 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 2
              if($_SESSION['test'.$this->getTest()][$this->questionNo($prim)]['status'] == 4){$type = 'correct';}
              else{$type = 'incorrect';}
              
-             $dsa = $this->getDSACat($prim);
-             $this->testresults['dsa'][$dsa][$type] = (int)$this->testresults['dsa'][$dsa][$type] + 1;
+             $dvsa = $this->getDSACat($prim);
+             $this->testresults['dvsa'][$dvsa][$type] = (int)$this->testresults['dvsa'][$dvsa][$type] + 1;
         }
         
         $pass = true;
-        foreach($this->testresults['dsa'] as $category => $value){
+        foreach($this->testresults['dvsa'] as $category => $value){
             if($pass !== false){
                 if($value['correct'] < $this->passmarkPerCat){$pass = false;}
             }

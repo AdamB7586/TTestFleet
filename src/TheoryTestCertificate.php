@@ -78,9 +78,9 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
     
     protected function overallResults(){
         $header = ['Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status'];
-        foreach($this->db->selectAll($this->theory->dsaCategoriesTable) as $group => $data){
-            $correct = (int)$this->theory->testresults['dsa'][$data['section']]['correct'];
-            $incorrect = (int)$this->theory->testresults['dsa'][$data['section']]['incorrect'];
+        foreach($this->theory->getCategories() as $group => $data){
+            $correct = (int)$this->theory->testresults['dvsa'][$data['section']]['correct'];
+            $incorrect = (int)$this->theory->testresults['dvsa'][$data['section']]['incorrect'];
             $total = $correct + $incorrect;
 
             if($correct >= $this->theory->passmarkPerCat){$groupstatus = 'Passed';}
