@@ -16,7 +16,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate{
         $this->PDFInfo();
         if($this->theory->testresults['status'] == 'pass'){
             $this->pdf->AddPage();
-            $this->pdf->Image('images/cert.jpg', 0, 0, 210, 297);
+            $this->pdf->Image($this->getCertificateImage(), 0, 0, 210, 297);
             $this->pdf->SetFont('Arial','B', 24);
             $this->pdf->Ln(30);
             $this->pdf->Cell(190, 15, strip_tags($this->theory->getTestName()), 0, 0, 'C');
