@@ -6,7 +6,8 @@ use DBAL\Database;
 use Configuration\Config;
 use Smarty;
 
-class LearnTest extends \TheoryTest\Car\LearnTest{
+class LearnTest extends \TheoryTest\Car\LearnTest
+{
     protected $scriptVar = 'fleetlearn';
     /**
      * Set up all of the components needed to create a Theory Test
@@ -16,7 +17,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param object $user This should be and instance if the User Class
      * @param false|int $userID If you wish to emulate a user set this value to the users ID else set to false
      */
-    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false, $theme = 'bootstrap') {
+    public function __construct(Database $db, Config $config, Smarty $layout, $user, $userID = false, $templateDir = false, $theme = 'bootstrap')
+    {
         parent::__construct($db, $config, $layout, $user, $userID, $templateDir, $theme);
         $this->layout->addTemplateDir(($templateDir === false ? str_replace(basename(__DIR__), '', dirname(__FILE__)).'templates'.DS.$theme : $templateDir), 'fleettheory');
         $this->setImagePath(DS.'images'.DS.'fleet'.DS);
@@ -25,7 +27,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     /**
      * Sets the tables
      */
-    public function setTables() {
+    public function setTables()
+    {
         $this->questionsTable = $this->config->table_fleet_questions;
         $this->learningProgressTable = $this->config->table_fleet_progress;
         $this->progressTable = $this->config->table_fleet_test_progress;
@@ -33,16 +36,19 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
     }
     
     /**
-     * Creates a new test for the 
+     * Creates a new test for the
      * @param int $sectionNo This should be the section number for the test
      * @param mixed $type Added to make compatible with parent - not currently used
      */
-    public function createNewTest($sectionNo = '1', $type = false){
+    public function createNewTest($sectionNo = '1', $type = false)
+    {
         $this->clearSettings();
         $this->chooseStudyQuestions($sectionNo);
         $this->setTest($sectionNo);
         $learnName = $this->getSectionInfo($this->dvsaCatTable, $sectionNo);
-        if(isset($learnName['free']) && $learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')){$this->user->checkUserAccess(NULL, 'fleet');}
+        if (isset($learnName['free']) && $learnName['free'] == 0 && method_exists($this->user, 'checkUserAccess')) {
+            $this->user->checkUserAccess(null, 'fleet');
+        }
         $this->setTestName($learnName['name']);
         return $this->buildTest();
     }
@@ -52,7 +58,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param int $sectionNo This should be the section number for the test
      * @param string $type Required for compatibility with parent class
      */
-    protected function chooseStudyQuestions($sectionNo, $type = '') {
+    protected function chooseStudyQuestions($sectionNo, $type = '')
+    {
         $this->testInfo['section'] = $sectionNo;
         setcookie('testinfo', serialize($this->testInfo), time() + 31536000, '/');
     }
@@ -62,7 +69,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param int $prim Should be the question prim number
      * @return array|boolean Returns question data as array if data exists else returns false
      */
-    protected function getQuestionData($prim){
+    protected function getQuestionData($prim)
+    {
         return $this->db->select($this->questionsTable, ['prim' => $prim]);
     }
     
@@ -70,7 +78,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the number of questions in the current section
      * @return int This should be the number of questions for the section
      */
-    public function numQuestions(){
+    public function numQuestions()
+    {
         return count($this->db->selectAll($this->questionsTable, ['dsacat' => $this->testInfo['section']], ['prim']));
     }
     
@@ -78,8 +87,9 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the current question number
      * @return int Returns the current question number
      */
-    protected function currentQuestion(){
-        if(!isset($this->current)){
+    protected function currentQuestion()
+    {
+        if (!isset($this->current)) {
             $this->current = $this->db->select($this->questionsTable, ['prim' => $this->currentPrim, 'dsacat' => $this->testInfo['section']], ['dsaqposition'])['dsaqposition'];
         }
         return $this->current;
@@ -89,12 +99,15 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the Previous question HTML for the current question
      * @return string Returns the previous question HTML with the correct prim number for the previous question
      */
-    protected function prevQuestion(){
-        if(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete('prev');}
-        elseif($this->currentQuestion() != 1){
+    protected function prevQuestion()
+    {
+        if (isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1) {
+            $prim = $this->getIncomplete('prev');
+        } elseif ($this->currentQuestion() != 1) {
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['<', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'DESC']);
+        } else {
+            $prim = $this->getLastQuestion();
         }
-        else{$prim = $this->getLastQuestion();}
         return ['id' => $prim, 'text' => 'Previous', 'icon' => 'angle-left'];
     }
     
@@ -102,12 +115,15 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the Next question HTML for the current question
      * @return string Returns the next question HTML with the correct prim number for the next question
      */
-    protected function nextQuestion(){
-        if(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1){$prim = $this->getIncomplete();}
-        elseif($this->currentQuestion() < $this->numQuestions()){
+    protected function nextQuestion()
+    {
+        if (isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1) {
+            $prim = $this->getIncomplete();
+        } elseif ($this->currentQuestion() < $this->numQuestions()) {
             $prim = $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => ['>', $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'ASC']);
+        } else {
+            $prim = $this->getFirstQuestion();
         }
-        else{$prim = $this->getFirstQuestion();}
         return ['id' => $prim, 'text' => 'Next', 'icon' => 'angle-right'];
     }
     
@@ -116,20 +132,28 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param string $nextOrPrev Should be either next of previous for which way you want the next question to be
      * @return int|string Returns the prim number for the next or previous question or none if no more incomplete questions exist
      */
-    protected function getIncomplete($nextOrPrev = 'next'){
-        if(strtolower($nextOrPrev) == 'next'){$dir = '>'; $sort = 'ASC'; $start = '0';}
-        else{$dir = '<'; $sort = 'DESC'; $start = '100000';}
+    protected function getIncomplete($nextOrPrev = 'next')
+    {
+        if (strtolower($nextOrPrev) == 'next') {
+            $dir = '>';
+            $sort = 'ASC';
+            $start = '0';
+        } else {
+            $dir = '<';
+            $sort = 'DESC';
+            $start = '100000';
+        }
         
         $questions = $this->db->selectAll($this->questionsTable, ['dsaqposition' => [$dir, $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], ['dsaqposition' => $sort]);
-        foreach($questions as $question){
-            if($this->useranswers[$question['prim']]['status'] <= 1){
+        foreach ($questions as $question) {
+            if ($this->useranswers[$question['prim']]['status'] <= 1) {
                 return $question['prim'];
             }
         }
         
         $questions = $this->db->selectAll($this->questionsTable, ['dsaqposition' => [$dir, $start], 'dsacat' => $this->testInfo['section']], ['prim'], ['dsaqposition' => $sort]);
-        foreach($questions as $question){
-            if($this->useranswers[$question['prim']]['status'] <= 1){
+        foreach ($questions as $question) {
+            if ($this->useranswers[$question['prim']]['status'] <= 1) {
                 return $question['prim'];
             }
         }
@@ -140,7 +164,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the first questions prim number for the current section
      * @return int Returns the prim number of the first question in the current section
      */
-    protected function getFirstQuestion(){
+    protected function getFirstQuestion()
+    {
         return $this->db->fetchColumn($this->questionsTable, ['dsaqposition' => '1', 'dsacat' => $this->testInfo['section']], ['prim']);
     }
     
@@ -148,7 +173,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns the prim number for the last question
      * @return int Returns the prim number for the last question
      */
-    protected function getLastQuestion(){
+    protected function getLastQuestion()
+    {
         return $this->db->fetchColumn($this->questionsTable, ['dsacat' => $this->testInfo['section']], ['prim'], 0, ['dsaqposition' => 'DESC']);
     }
     
@@ -156,7 +182,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * Returns any extra content to be displayed on the page
      * @return string
      */
-    protected function extraContent(){
+    protected function extraContent()
+    {
         return '</div></div><div class="row"><div><div class="col-xs-12 skipcorrectclear"><div class="skipcorrect btn btn-theory'.(isset($_COOKIE['skipCorrect']) && $_COOKIE['skipCorrect'] == 1 ? ' flagged' : '').'">Skip Correct</div></div>';
     }
     
@@ -165,7 +192,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param boolean $prim Added for compatibility with parent class
      * @return string Returns the button HTML
      */
-    protected function flagHintButton($prim = false){
+    protected function flagHintButton($prim = false)
+    {
         return false;
     }
     
@@ -175,7 +203,8 @@ class LearnTest extends \TheoryTest\Car\LearnTest{
      * @param int $prim This should be the questions unique prim number
      * @return boolean Should only return false as no fleet explanations exist
      */
-    public function dsaExplanation($explanation, $prim){
+    public function dsaExplanation($explanation, $prim)
+    {
         return false;
     }
 }

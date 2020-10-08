@@ -2,7 +2,8 @@
 
 namespace TheoryTest\Fleet;
 
-class Review extends \TheoryTest\Car\Review{
+class Review extends \TheoryTest\Car\Review
+{
     
     public $where = [];
     
@@ -14,7 +15,8 @@ class Review extends \TheoryTest\Car\Review{
      * Returns the sections to be displayed within the table
      * @return array The list of sections for the table will be returned
      */
-    public function getSectionTables(){
+    public function getSectionTables()
+    {
         return [
             ['table' => 'fleet_sections', 'name' => 'DVSA Category', 'section' => 'dsa', 'sectionNo' => 'dsacat']
         ];
@@ -23,7 +25,8 @@ class Review extends \TheoryTest\Car\Review{
     /**
      * Sets the tables
      */
-    public function setTables() {
+    public function setTables()
+    {
         $this->questionsTable = $this->config->table_fleet_questions;
         $this->learningProgressTable = $this->config->table_fleet_progress;
         $this->progressTable = $this->config->table_fleet_test_progress;
