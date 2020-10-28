@@ -88,6 +88,10 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate
     protected function overallResults()
     {
         $header = ['Group', 'Topics in group', 'Correct', 'Incorrect', 'Total', 'Percentage', 'Status'];
+        $groupdata = [];
+        $totalcorrect = 0;
+        $totalincorrect = 0;
+        $totalq = 0;
         foreach ($this->theory->getCategories() as $group => $data) {
             $correct = (int)$this->theory->testresults['dvsa'][$data['section']]['correct'];
             $incorrect = (int)$this->theory->testresults['dvsa'][$data['section']]['incorrect'];
@@ -105,7 +109,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate
             $totalq = $totalq + $total;
         }
         $widths = [14,78,19,19,19,20,21];
-        $this->pdf->basicTable($header, $groupdata, $widths, 6, 2);
+        $this->pdf->basicTable($header, $groupdata, $widths, 6, false);
         $first = true;
         $grouppercent = round(($totalcorrect / $totalq) * 100);
         
@@ -118,7 +122,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate
         $overall = ['', 'Overall Status', $totalcorrect, $totalincorrect, $totalq, $grouppercent.'%', $status];
         $this->pdf->SetFont('Arial', 'B', 9);
         foreach ($widths as $col) {
-            if ($first == true) {
+            if ($first === true) {
                 $first = false;
                 $currentvalue = current($overall);
             } else {
@@ -130,6 +134,7 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate
         $this->pdf->AddPage('P', 'A4');
         $this->pdf->SetFont('Arial', 'B', 9);
         $testheader = ['Question', 'Learning Section', 'Question No.', 'Status'];
+        $testdata = [];
         foreach ($this->theory->questions as $question => $prim) {
             if ($this->theory->useranswers[$question]['status'] == '4') {
                 $correct = 'Correct';
@@ -139,6 +144,6 @@ class TheoryTestCertificate extends \TheoryTest\Car\TheoryTestCertificate
             $questioninfo = $this->theory->questionInfo($prim);
             $testdata[] = [$question, $questioninfo['cat'], $questioninfo['topic'], $correct];
         }
-        $this->pdf->basicTable($testheader, $testdata, [22,98,30,40], 5, 2);
+        $this->pdf->basicTable($testheader, $testdata, [22,98,30,40], 5, false);
     }
 }
