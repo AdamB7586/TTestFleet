@@ -146,20 +146,32 @@ class LearnTest extends \TheoryTest\Car\LearnTest
             $start = '100000';
         }
         
-        $questions = $this->db->selectAll($this->questionsTable, ['dsaqposition' => [$dir, $this->currentQuestion()], 'dsacat' => $this->testInfo['section']], ['prim'], ['dsaqposition' => $sort]);
-        foreach ($questions as $question) {
-            if ($this->useranswers[$question['prim']]['status'] <= 1) {
-                return $question['prim'];
-            }
+        $searchCurrentQuestion = $this->findNextQuestion($dir, $this->currentQuestion(), $sort);
+        if ($searchCurrentQuestion !== false) {
+            return $searchCurrentQuestion;
         }
-        
-        $questions = $this->db->selectAll($this->questionsTable, ['dsaqposition' => [$dir, $start], 'dsacat' => $this->testInfo['section']], ['prim'], ['dsaqposition' => $sort]);
-        foreach ($questions as $question) {
-            if ($this->useranswers[$question['prim']]['status'] <= 1) {
-                return $question['prim'];
-            }
+        $searchStart = $this->findNextQuestion($dir, $start, $sort);
+        if ($searchStart !== false) {
+            return $searchStart;
         }
         return 'none';
+    }
+    
+    /**
+     * Finds the next question from the given parameters
+     * @param string $dir This should be the direction to search for the next question '>' or '<'
+     * @param int $start The start number to search for the next question
+     * @param string $sort The sort order for the next question ASC or DESC
+     * @return int|false Will return the prim number for the next question
+     */
+    protected function findNextQuestion($dir, $start, $sort)
+    {
+        foreach ($this->db->selectAll($this->questionsTable, ['dsaqposition' => [$dir, $start], 'dsacat' => $this->testInfo['section']], ['prim'], ['dsaqposition' => $sort]) as $question) {
+            if ($this->useranswers[$question['prim']]['status'] <= 1) {
+                return $question['prim'];
+            }
+        }
+        return false;
     }
     
     /**
