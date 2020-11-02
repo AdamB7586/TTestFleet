@@ -204,7 +204,7 @@ class LearnTest extends \TheoryTest\Car\LearnTest
     /**
      * Returns the correct button for the learning test section
      * @param boolean $prim Added for compatibility with parent class
-     * @return string Returns the button HTML
+     * @return boolean Returns false
      */
     protected function flagHintButton($prim = false)
     {
