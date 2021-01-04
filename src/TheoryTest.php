@@ -135,10 +135,10 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest
     protected function chooseQuestions($testNo)
     {
         $this->db->delete($this->progressTable, ['user_id' => $this->getUserID(), 'type' => $this->getTestType(), 'status' => 0]);
-        $questions = $this->db->query("(SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '1' LIMIT 25)
-UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '2' LIMIT 25)
-UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '3' LIMIT 25)
-UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' LIMIT 25) ORDER BY RAND();");
+        $questions = $this->db->query("(SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '1' ORDER BY RAND() LIMIT 25)
+UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '2' ORDER BY RAND() LIMIT 25)
+UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '3' ORDER BY RAND() LIMIT 25)
+UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER BY RAND() LIMIT 25) ORDER BY RAND();");
         unset($_SESSION['test'.$this->getTest()]);
         unset($_SESSION['question_no']);
         foreach ($questions as $q => $question) {
