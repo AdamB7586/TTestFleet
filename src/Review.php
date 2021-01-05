@@ -16,7 +16,7 @@ class Review extends \TheoryTest\Car\Review
     public function getSectionTables()
     {
         return [
-            ['table' => 'fleet_sections', 'name' => 'DVSA Category', 'section' => 'dsa', 'sectionNo' => 'dsacat']
+            ['table' => 'fleet_sections', 'name' => 'DVSA Category', 'section' => 'dvsa', 'sectionNo' => 'dsacat']
         ];
     }
     
