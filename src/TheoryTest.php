@@ -253,7 +253,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
      * Marks the current test
      * @return void nothing is returned
      */
-    protected function markTest()
+    protected function markTest($time = false)
     {
         $this->getQuestions();
         foreach ($this->questions as $prim) {
@@ -292,7 +292,13 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
             $this->testresults['status'] = 'fail';
             $status = 2;
         }
-        $this->db->update($this->progressTable, ['status' => $status, 'results' => serialize($this->testresults), 'complete' => date('Y-m-d H:i:s'), 'totalscore' => $this->numCorrect()], ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0]);
+        
+        if ($time !== false) {
+            list($mins, $secs) = explode(':', $time);
+            $newtime = gmdate('i:s', ($this->getStartSeconds() - (($mins * 60) + $secs)));
+            $this->userProgress['time_taken'] = $newtime;
+        }
+        $this->db->update($this->progressTable, array_merge(['status' => $status, 'results' => serialize($this->testresults), 'complete' => date('Y-m-d H:i:s'), 'totalscore' => $this->numCorrect()], ($time !== false ? ['time_taken' => $newtime] : [])), ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => 0]);
     }
     
     /**
