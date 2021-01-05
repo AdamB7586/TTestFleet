@@ -9,8 +9,6 @@ class Review extends \TheoryTest\Car\Review
     
     public $noOfTests = 1;
     
-    protected $testType = 'Fleet';
-    
     /**
      * Returns the sections to be displayed within the table
      * @return array The list of sections for the table will be returned
