@@ -7,7 +7,7 @@ class Review extends \TheoryTest\Car\Review
     
     public $where = [];
     
-    public $noOfTests = 1;
+    public $noOfTests = 0;
     
     /**
      * Returns the sections to be displayed within the table
