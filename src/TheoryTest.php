@@ -291,7 +291,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
             $status = 2;
         }
         
-        if ($time !== false) {
+        if ($time !== false && preg_match('~[0-9]+~', $time)) {
             list($mins, $secs) = explode(':', $time);
             $newtime = gmdate('i:s', ($this->getStartSeconds() - (($mins * 60) + $secs)));
             $this->userProgress['time_taken'] = $newtime;
