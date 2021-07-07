@@ -78,7 +78,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest
         if (is_int($this->uniqueTestID)) {
             return $this->uniqueTestID;
         }
-        $testID = $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest()], ['id'], 0, ['started' => 'DESC']);
+        $testID = $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest()], ['id'], 0, ['started' => 'DESC'], false);
         if (is_numeric($testID)) {
             $this->setTestID($testID);
         }
@@ -136,7 +136,7 @@ class TheoryTest extends \TheoryTest\Car\TheoryTest
         $questions = $this->db->query("(SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '1' ORDER BY RAND() LIMIT 25)
 UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '2' ORDER BY RAND() LIMIT 25)
 UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '3' ORDER BY RAND() LIMIT 25)
-UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER BY RAND() LIMIT 25) ORDER BY RAND();");
+UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER BY RAND() LIMIT 25) ORDER BY RAND();", [], false);
         unset($_SESSION['test'.$this->getTest()]);
         unset($_SESSION['question_no']);
         foreach ($questions as $q => $question) {
@@ -151,7 +151,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
      */
     protected function anyExisting()
     {
-        $existing = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'status' => ['<=', 1]]);
+        $existing = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'status' => ['<=', 1]], '*', [], false);
         if ($existing) {
             $this->exists = true;
             if ($existing['status'] == 1) {
@@ -187,7 +187,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
     public function getUserAnswers()
     {
         if (!isset($this->useranswers)) {
-            $answers = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()], ['id', 'answers', 'question_no']);
+            $answers = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()], ['id', 'answers', 'question_no'], [], false);
             if ($answers) {
                 $this->useranswers = unserialize($answers['answers']);
                 if (!isset($_SESSION['test'.$this->getTest()])) {
@@ -342,7 +342,7 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
      */
     public function getTestResults()
     {
-        $results = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => ['>', 0], 'id' => $this->getTestID()], ['id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status']);
+        $results = $this->db->select($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'status' => ['>', 0], 'id' => $this->getTestID()], ['id', 'test_id', 'results', 'started', 'complete', 'time_taken', 'status'], [], false);
         if ($results) {
             $this->testresults = unserialize($results['results']);
             $this->testresults['id'] = $results['id'];
@@ -360,6 +360,6 @@ UNION (SELECT `prim` FROM `{$this->questionsTable}` WHERE `dsacat` = '4' ORDER B
      */
     public function getTime($type = 'taken')
     {
-        return $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()], ['time_'.$type]);
+        return $this->db->fetchColumn($this->progressTable, ['user_id' => $this->getUserID(), 'test_id' => $this->getTest(), 'id' => $this->getTestID()], ['time_'.$type], 0, [], false);
     }
 }
